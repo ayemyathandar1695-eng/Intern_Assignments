@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Calculator</title>
+    <style>
+        /* CSS ပိုင်း - Layout ကို Flexbox ဖြင့် ပုံဖော်ခြင်း */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family:  sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f9;
+            height: 100vh;
+            display: flex; /* Screen ရဲ့ အလယ်မှာထားရန် */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calculator-card {
+            background-color: #ffffff;
+            width: 450px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column; /* အပေါ်အောက် တန်းစီရန် */
+            gap: 25px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .input-group {
+            display: flex; /* Input များကို ဘေးတိုက်ထားရန် */
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input {
+            width: 140px;
+            height: 50px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 1.1rem;
+            outline: none;
+            text-align: left;
+        }
+
+        .operator-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 50px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        button {
+            width: 100%;
+            height: 55px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            
+        }
+
+        /*button:hover {
+            background-color: #0069d9;
+        }*/
+
+        .result-box {
+            display: flex;
+            justify-content: space-between; /* Result စာသားကို ဘယ်၊ ဂဏန်းကို ညာ ပို့ရန် */
+            align-items: center;
+            border: 1px dashed #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        .result-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        #final-result {
+            color: #28a745; /* ပုံထဲကအတိုင်း အစိမ်းရောင် */
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator-card">
+        <h2>Mini Calculator</h2>
+        
+        <div class="input-group">
+            <input type="number" id="num1" value="45">
+            <div class="operator-box">+</div>
+            <input type="number" id="num2" value="45">
+        </div>
+
+        <button onclick="doCalculate()">Calculate Amount</button>
+
+        <div class="result-box">
+            <span class="result-label">Result:</span>
+            <span id="final-result">90</span>
+        </div>
+    </div>
+
+    <script>
+        function doCalculate(operator) {
+    const n1 = document.getElementById('num1').value;
+    const n2 = document.getElementById('num2').value;
+    let total = 0;
+
+    const num1 = Number(n1);
+    const num2 = Number(n2);
+
+    if (operator === '+') {
+        total = num1 + num2;
+    } else if (operator === '-') {
+        total = num1 - num2;
+    } else if (operator === '*') {
+        total = num1 * num2;
+    } else if (operator === '/') {
+        total = num1 / num2;
+    }
+
+    document.getElementById('final-result').innerText = total;
+}
+        
+    </script>
+
+</body>
+</html>
