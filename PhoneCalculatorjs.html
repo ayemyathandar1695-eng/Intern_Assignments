@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Calculator</title>
+    <style>
+        /* Calculator Design */
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f4; margin: 0; }
+        .calculator { width: 320px; background: #ded7d7; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        
+        #display {
+            width: 100%;
+            height: 60px;
+            font-size: 2rem;
+            text-align: right;
+            border: none;
+            outline: none;
+            background: #424748;
+            color: rgb(190, 152, 152);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            caret-color: #227580; /* Cursor အရောင် */
+            inputmode: none; /* ဖုန်း Keyboard မတက်အောင် */
+        }
+
+        .row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .btn {
+            width: 65px; height: 65px; border-radius: 50%; border: none;
+            font-size: 1.5rem; cursor: pointer; background: #555; color: white;
+            transition: 0.2s;
+        }
+        .btn:active { transform: scale(0.9); background: #777; }
+        .operator { background: #729eb6; }
+        .clear { background: #a5a5a5; color: black; }
+        .equal { background: #6e81c4; width: 140px; border-radius: 30px; }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <!-- Input Mode None ကြောင့် ဖုန်းမှာ Keyboard မတက်ဘဲ Cursor ပဲပေါ်မယ် -->
+        <input type="text" id="display" value="0" spellcheck="false">
+
+        <div class="row">
+            <button class="btn clear" onclick="clearDisplay()">C</button>
+            <button class="btn operator" onclick="appendValue('%')">%</button>
+            <button class="btn operator" onclick="backspace()">⌫</button>
+            <button class="btn operator" onclick="appendValue('/')">÷</button>
+        </div>
+        <div class="row">
+            <button class="btn" onclick="appendValue('7')">7</button>
+            <button class="btn" onclick="appendValue('8')">8</button>
+            <button class="btn" onclick="appendValue('9')">9</button>
+            <button class="btn operator" onclick="appendValue('*')">×</button>
+        </div>
+        <div class="row">
+            <button class="btn" onclick="appendValue('4')">4</button>
+            <button class="btn" onclick="appendValue('5')">5</button>
+            <button class="btn" onclick="appendValue('6')">6</button>
+            <button class="btn operator" onclick="appendValue('-')">-</button>
+        </div>
+        <div class="row">
+            <button class="btn" onclick="appendValue('1')">1</button>
+            <button class="btn" onclick="appendValue('2')">2</button>
+            <button class="btn" onclick="appendValue('3')">3</button>
+            <button class="btn operator" onclick="appendValue('+')">+</button>
+        </div>
+        <div class="row">
+            <button class="btn" onclick="appendValue('(')">(</button>
+            <button class="btn" onclick="appendValue('0')">0</button>
+            <button class="btn" onclick="appendValue('.')">.</button>
+            <button class="btn operator" onclick="appendValue(')')">)</button>
+        </div>
+        <div class="row">
+            <button class="btn equal" style="width: 100%;" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+
+        function appendValue(value) {
+            const operators = ['+', '-', '*', '/', '×', '÷', '%'];
+            let val = display.value;
+            const startPos = display.selectionStart;
+            const endPos = display.selectionEnd;
+
+            // ၁။ အစက် (.) စစ်ဆေးခြင်း (တစ်ဂဏန်းချင်းစီမှာ တစ်လုံးပဲပါရမယ်)
+            if (value === '.') {
+                let lastOp = -1;
+                operators.forEach(op => {
+                    let idx = val.lastIndexOf(op, startPos - 1);
+                    if (idx > lastOp) lastOp = idx;
+                });
+                let currentNum = val.substring(lastOp + 1, startPos);
+                if (currentNum.includes('.')) return;
+            }
+
+            // ၂။ Operator ၂ ခါဆင့်မရအောင် တားခြင်း
+            let lastChar = val.charAt(startPos - 1);
+            if (operators.includes(value) && operators.includes(lastChar)) return;
+
+            // ၃။ Auto Zero Logic - 0 ပဲရှိနေရင် အသစ်ရိုက်တာနဲ့ အစားထိုးမယ်
+            if (val === "0" && !operators.includes(value) && value !== "." && value !== ")") {
+                display.value = value;
+                display.setSelectionRange(1, 1);
+                display.focus();
+                return;
+            }
+
+            // ၄။ စာသားညှပ်ထည့်ခြင်း
+            let newValue = val.substring(0, startPos) + value + val.substring(endPos);
+            display.value = newValue;
+
+            // Cursor နေရာပြန်ချခြင်း
+            display.focus();
+            display.setSelectionRange(startPos + 1, startPos + 1);
+        }
+
+        function backspace() {
+            let val = display.value;
+            let start = display.selectionStart;
+            let end = display.selectionEnd;
+
+            if (start === end) {
+                if (start > 0) {
+                    display.value = val.substring(0, start - 1) + val.substring(end);
+                    display.setSelectionRange(start - 1, start - 1);
+                }
+            } else {
+                display.value = val.substring(0, start) + val.substring(end);
+                display.setSelectionRange(start, start);
+            }
+
+            if (display.value === "") display.value = "0";
+            display.focus();
+        }
+
+        function clearDisplay() {
+            display.value = "0";
+            display.focus();
+        }
+
+        function calculate() {
+            try {
+                let expr = display.value;
+                
+                // ကွင်းစကွင်းပိတ် အရေအတွက် ညှိပေးခြင်း
+                let openB = (expr.match(/\(/g) || []).length;
+                let closeB = (expr.match(/\)/g) || []).length;
+                while (openB > closeB) { expr += ")"; closeB++; }
+
+                // တွက်ချက်ရန် သင်္ကေတပြောင်းလဲခြင်း
+                let result = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/%/g, '/100');
+                
+                let finalAnswer = eval(result);
+
+                // ဒသမ ၈ နေရာအထိပဲ ယူမယ်
+                if (!Number.isInteger(finalAnswer)) {
+                    finalAnswer = parseFloat(finalAnswer.toFixed(8));
+                }
+
+                display.value = finalAnswer;
+                display.focus();
+            } catch (e) {
+                display.value = "Error";
+                setTimeout(() => display.value = "0", 1500);
+            }
+        }
+
+        // စာမျက်နှာစဖွင့်တာနဲ့ Display ကို Focus ပေးထားမယ်
+        window.onload = () => display.focus();
+    </script>
+</body>
+</html>
